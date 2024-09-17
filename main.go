@@ -26,9 +26,17 @@ func main() {
 		Automigrate: true,
 	})
 
-	// Run migrations
+	// Run migrations and create admin user
 	if err := app.Bootstrap(); err != nil {
-		log.Fatalf("Failed to bootstrap and run migrations: %v", err)
+		log.Fatalf("Failed to bootstrap: %v", err)
+	}
+
+	if err := runMigrations(app); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	if err := createAdminUser(app); err != nil {
+		log.Fatalf("Failed to create admin user: %v", err)
 	}
 
 	// Initialize PocketBase
@@ -56,4 +64,29 @@ func main() {
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func runMigrations(app *pocketbase.PocketBase) error {
+	return app.Dao().RunMigrations()
+}
+
+func createAdminUser(app *pocketbase.PocketBase) error {
+	adminEmail := os.Getenv("ADMIN_EMAIL")
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
+
+	if adminEmail == "" || adminPassword == "" {
+		return fmt.Errorf("ADMIN_EMAIL and ADMIN_PASSWORD must be set in .env file")
+	}
+
+	admin, err := app.Dao().FindAdminByEmail(adminEmail)
+	if err == nil && admin != nil {
+		// Admin already exists
+		return nil
+	}
+
+	admin = &models.Admin{}
+	admin.Email = adminEmail
+	admin.SetPassword(adminPassword)
+
+	return app.Dao().SaveAdmin(admin)
 }
