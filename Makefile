@@ -1,4 +1,4 @@
-.PHONY: build run test clean
+.PHONY: build run test clean clean-db migrate migrate-down migrate-fresh test-crud
 
 build:
 	go build -o service-blueprint
@@ -24,3 +24,9 @@ migrate-down: build
 migrate-fresh: build
 	./service-blueprint migrate down
 	./service-blueprint migrate up
+
+test-crud: build
+	./service-blueprint serve &
+	sleep 5
+	bash test_crud.sh
+	pkill -f "./service-blueprint serve"
