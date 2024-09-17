@@ -3,7 +3,7 @@ module service-blueprint
 go 1.22.4
 
 require (
-	github.com/labstack/echo/v4 v4.12.0
+	github.com/labstack/echo/v4 v4.11.4
 	github.com/pocketbase/pocketbase v0.22.20
 )
 
