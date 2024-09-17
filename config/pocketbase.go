@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/models"
+	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 func InitializePocketBase(app *pocketbase.PocketBase) error {
@@ -10,10 +11,10 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	settingsCollection := &models.Collection{
 		Name: "settings",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*models.SchemaField{
-			{Name: "user", Type: "text"},
-			{Name: "key", Type: "text"},
-			{Name: "value", Type: "text"},
+		Schema: schema([]*schema.SchemaField{
+			{Name: "user", Type: schema.FieldTypeText},
+			{Name: "key", Type: schema.FieldTypeText},
+			{Name: "value", Type: schema.FieldTypeText},
 		}),
 	}
 
@@ -21,9 +22,9 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	clientAppsCollection := &models.Collection{
 		Name: "client_applications",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*models.SchemaField{
-			{Name: "client_id", Type: "text"},
-			{Name: "client_secret", Type: "text"},
+		Schema: schema([]*schema.SchemaField{
+			{Name: "client_id", Type: schema.FieldTypeText},
+			{Name: "client_secret", Type: schema.FieldTypeText},
 		}),
 	}
 
@@ -31,10 +32,10 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	projectsCollection := &models.Collection{
 		Name: "projects",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*models.SchemaField{
-			{Name: "name", Type: "text"},
-			{Name: "client_id", Type: "text"},
-			{Name: "status", Type: "text"},
+		Schema: schema([]*schema.SchemaField{
+			{Name: "name", Type: schema.FieldTypeText},
+			{Name: "client_id", Type: schema.FieldTypeText},
+			{Name: "status", Type: schema.FieldTypeText},
 		}),
 	}
 
@@ -50,6 +51,6 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 }
 
 // Helper function to create a schema
-func schema(fields []*models.SchemaField) models.Schema {
-	return models.Schema(fields)
+func schema(fields []*schema.SchemaField) schema.Schema {
+	return schema.Schema(fields)
 }
