@@ -47,7 +47,8 @@ func main() {
 
 	// Create admin user after migrations have run
 	if err := createAdminUser(app); err != nil {
-		log.Fatalf("Failed to create admin user: %v", err)
+		log.Printf("Failed to create admin user: %v", err)
+		// Continue execution even if admin user creation fails
 	}
 
 	// Start the server
@@ -81,7 +82,14 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 	}
 
 	admin, err := app.Dao().FindAdminByEmail(adminEmail)
-	if err == nil && admin != nil {
+	if err != nil {
+		// If the error is not "record not found", return the error
+		if err.Error() != "sql: no rows in result set" {
+			return fmt.Errorf("error finding admin: %v", err)
+		}
+	}
+
+	if admin != nil {
 		// Admin already exists
 		return nil
 	}
@@ -92,15 +100,6 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 
 	err = app.Dao().SaveAdmin(admin)
 	if err != nil {
-		if strings.Contains(err.Error(), "no such table: _admins") {
-			// If the _admins table doesn't exist, try to create it
-			_, err = app.DB().NewQuery("CREATE TABLE _admins (id TEXT PRIMARY KEY, created TEXT DEFAULT '', updated TEXT DEFAULT '', email TEXT, tokenKey TEXT, passwordHash TEXT, lastResetSentAt TEXT DEFAULT '', avatar TEXT DEFAULT '')").Execute()
-			if err != nil {
-				return fmt.Errorf("failed to create _admins table: %v", err)
-			}
-			// Try to save the admin again
-			return app.Dao().SaveAdmin(admin)
-		}
 		return fmt.Errorf("failed to save admin: %v", err)
 	}
 
