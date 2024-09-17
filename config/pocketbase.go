@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-	"github.com/pocketbase/pocketbase/tools/migrate"
 )
 
 func InitializePocketBase(app *pocketbase.PocketBase) error {
@@ -20,10 +19,6 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		Automigrate: true,
 	})
 
-	// Run migrations
-	if err := migrate.Up(app.DB(), migrationsDir); err != nil {
-		return fmt.Errorf("failed to run migrations: %w", err)
-	}
-
+	// Migrations will be automatically run by PocketBase
 	return nil
 }
