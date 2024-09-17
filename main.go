@@ -6,11 +6,13 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+	m "github.com/pocketbase/pocketbase/migrations"
 	"log"
 
 	"service-blueprint/config"
 	"service-blueprint/handlers"
 	"service-blueprint/middleware"
+	_ "service-blueprint/migrations"
 )
 
 func main() {
@@ -24,6 +26,9 @@ func main() {
 		Dir:         "migrations",
 		Automigrate: false,
 	})
+
+	// Register custom migrations
+	m.RegisterMigrations(app)
 
 	// Initialize PocketBase
 	if err := config.InitializePocketBase(app); err != nil {
