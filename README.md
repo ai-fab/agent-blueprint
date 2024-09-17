@@ -27,8 +27,8 @@ AI Agent Microservices Blueprint is a robust, scalable backend service built wit
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/ai-agent-microservices-blueprint.git
-   cd ai-agent-microservices-blueprint
+   git clone https://github.com/ai-fab/agent-blueprint.git
+   cd agent-blueprint
    ```
 
 2. Install dependencies:
@@ -57,7 +57,6 @@ Edit the `.env` file to set your environment variables:
 
 - `ADMIN_EMAIL`: Email for the initial admin user
 - `ADMIN_PASSWORD`: Password for the initial admin user
-- `AI_AGENT_ENDPOINTS`: Comma-separated list of AI agent service endpoints
 
 ## Database Migrations
 
@@ -79,7 +78,9 @@ Start the microservices:
 docker-compose up
 ```
 
-The main service will be available at `http://localhost:8090`.
+The agent API will be available at `http://localhost:8090/api/...`.
+Pocketbase Admin UI will be available at `http://localhost:8090/_/`.
+
 
 ## API Endpoints
 
@@ -112,18 +113,17 @@ This will start the server, run a series of API tests, and then stop the server.
 - `middleware/`: Custom middleware (e.g., client authentication)
 - `migrations/`: Database migration files
 - `models/`: Data models
-- `agents/`: AI agent integration code
+- `agent/`: AI agent integration code
 - `test_crud.sh`: CRUD testing script
 - `docker-compose.yml`: Docker Compose configuration for microservices
 
 ### Adding New AI Agents
 
-1. Create a new directory in `agents/` for the AI agent type
+1. Create a new directory in `agent/` for the AI agent type
 2. Implement the agent's logic and API in the new directory
-3. Add a new service to `docker-compose.yml` for the AI agent
-4. Update the main service to communicate with the new AI agent service
-5. Add new routes and handlers for the AI agent's functionality
-6. Update the `test_crud.sh` script to test the new AI agent endpoints
+3. Update the main integrate the new AI agent logic
+4. Add new routes and handlers for the AI agent's functionality
+5. Update the `test_crud.sh` script to test the new AI agent endpoints
 
 ## Makefile Commands
 
