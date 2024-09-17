@@ -53,6 +53,7 @@ func main() {
 
 	// Start the server
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		log.Println("Server is starting...")
 		// Create a new Echo instance
 		echoApp := echo.New()
 
@@ -81,6 +82,10 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 		return fmt.Errorf("ADMIN_EMAIL and ADMIN_PASSWORD must be set in .env file")
 	}
 
+	if app.Dao() == nil {
+		return fmt.Errorf("app.Dao() is nil, PocketBase may not be properly initialized")
+	}
+
 	admin, err := app.Dao().FindAdminByEmail(adminEmail)
 	if err != nil {
 		// If the error is not "record not found", return the error
@@ -90,7 +95,7 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 	}
 
 	if admin != nil {
-		// Admin already exists
+		log.Println("Admin user already exists")
 		return nil
 	}
 
@@ -103,5 +108,6 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 		return fmt.Errorf("failed to save admin: %v", err)
 	}
 
+	log.Println("Admin user created successfully")
 	return nil
 }
