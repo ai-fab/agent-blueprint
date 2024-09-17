@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 )
 
 func InitializePocketBase(app *pocketbase.PocketBase) error {
