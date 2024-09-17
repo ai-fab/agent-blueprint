@@ -22,31 +22,12 @@ func main() {
 	// Register migrate command
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		Dir:         "migrations",
-		Automigrate: true,
+		Automigrate: false,
 	})
 
-	// Register custom migrations
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		// This will load and execute all .go files in the migrations directory
-		return migratecmd.RunMigrations(app.Dao(), &migratecmd.Config{
-			Dir:         "migrations",
-			Automigrate: true,
-		})
-	})
-
-	// Initialize PocketBase and run migrations
+	// Initialize PocketBase
 	if err := config.InitializePocketBase(app); err != nil {
 		log.Fatalf("Failed to initialize PocketBase: %v", err)
-	}
-
-	// Ensure migrations are applied
-	if err := app.Bootstrap(); err != nil {
-		log.Fatalf("Failed to bootstrap PocketBase: %v", err)
-	}
-
-	// Run migrations
-	if err := app.ResetBootstrapState(); err != nil {
-		log.Fatalf("Failed to reset bootstrap state: %v", err)
 	}
 
 	// Start the server
