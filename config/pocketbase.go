@@ -12,8 +12,10 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		return fmt.Errorf("failed to bootstrap PocketBase: %w", err)
 	}
 
-	// Migrations are handled automatically by migratecmd
-	// No need to run migrations manually
+	// Ensure the database is up to date
+	if err := app.ResetBootstrapState(); err != nil {
+		return fmt.Errorf("failed to reset bootstrap state: %w", err)
+	}
 
 	return nil
 }
