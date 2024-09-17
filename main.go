@@ -8,9 +8,9 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 
-	"your-module-name/config"
-	"your-module-name/handlers"
-	"your-module-name/middleware"
+	"service-blueprint/config"
+	"service-blueprint/handlers"
+	"service-blueprint/middleware"
 )
 
 func main() {
