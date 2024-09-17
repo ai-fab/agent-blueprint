@@ -31,6 +31,11 @@ func main() {
 		log.Printf("Failed to reset bootstrap state: %v", err)
 	}
 
+	// Run migrations
+	if err := app.Bootstrap(); err != nil {
+		log.Fatalf("Failed to bootstrap and run migrations: %v", err)
+	}
+
 	// Initialize PocketBase
 	if err := config.InitializePocketBase(app); err != nil {
 		log.Fatalf("Failed to initialize PocketBase: %v", err)
