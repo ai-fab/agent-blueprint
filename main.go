@@ -2,16 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"strings"
-
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/models"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+	"log"
+	"os"
 
 	"service-blueprint/config"
 	"service-blueprint/handlers"
