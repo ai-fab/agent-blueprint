@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/models"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
 	"service-blueprint/config"
@@ -67,7 +70,7 @@ func main() {
 }
 
 func runMigrations(app *pocketbase.PocketBase) error {
-	return app.Dao().RunMigrations()
+	return app.Dao().MigrateUp()
 }
 
 func createAdminUser(app *pocketbase.PocketBase) error {
