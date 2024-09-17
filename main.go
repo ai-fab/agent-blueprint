@@ -70,9 +70,8 @@ func main() {
 }
 
 func runMigrations(app *pocketbase.PocketBase) error {
-	return app.Dao().Migrate(func(txDao *daos.Dao) error {
-		return nil // migrations are handled automatically by migratecmd
-	})
+	// Migrations are handled automatically by migratecmd
+	return nil
 }
 
 func createAdminUser(app *pocketbase.PocketBase) error {
