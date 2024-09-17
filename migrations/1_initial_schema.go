@@ -1,4 +1,6 @@
-package migrations
+// +build plugin
+
+package main
 
 import (
 	"github.com/pocketbase/dbx"
