@@ -5,6 +5,7 @@ import (
 	"github.com/pocketbase/pocketbase/daos"
 	m "github.com/pocketbase/pocketbase/migrations"
 	"github.com/pocketbase/pocketbase/models"
+	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 func init() {
@@ -13,11 +14,11 @@ func init() {
 
 		collections := []struct {
 			name   string
-			schema models.Schema
+			schema schema.Schema
 		}{
 			{
 				name: "settings",
-				schema: models.Schema{
+				schema: schema.Schema{
 					"user":  {Type: "text"},
 					"key":   {Type: "text"},
 					"value": {Type: "text"},
@@ -25,14 +26,14 @@ func init() {
 			},
 			{
 				name: "client_applications",
-				schema: models.Schema{
+				schema: schema.Schema{
 					"client_id":     {Type: "text"},
 					"client_secret": {Type: "text"},
 				},
 			},
 			{
 				name: "projects",
-				schema: models.Schema{
+				schema: schema.Schema{
 					"name":      {Type: "text"},
 					"client_id": {Type: "text"},
 					"status":    {Type: "text"},
