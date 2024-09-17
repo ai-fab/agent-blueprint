@@ -32,7 +32,10 @@ func main() {
 		handlers.RegisterRoutes(echoApp, app)
 
 		// Mount Echo to the root
-		e.Router.GET("/*", echoApp.ServeHTTP)
+		e.Router.GET("/*", func(c echo.Context) error {
+			echoApp.ServeHTTP(c.Response(), c.Request())
+			return nil
+		})
 
 		return nil
 	})
