@@ -11,7 +11,7 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	settingsCollection := &models.Collection{
 		Name: "settings",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*schema.SchemaField{
+		Schema: createSchema([]*schema.SchemaField{
 			{Name: "user", Type: schema.FieldTypeText},
 			{Name: "key", Type: schema.FieldTypeText},
 			{Name: "value", Type: schema.FieldTypeText},
@@ -22,7 +22,7 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	clientAppsCollection := &models.Collection{
 		Name: "client_applications",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*schema.SchemaField{
+		Schema: createSchema([]*schema.SchemaField{
 			{Name: "client_id", Type: schema.FieldTypeText},
 			{Name: "client_secret", Type: schema.FieldTypeText},
 		}),
@@ -32,7 +32,7 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	projectsCollection := &models.Collection{
 		Name: "projects",
 		Type: models.CollectionTypeBase,
-		Schema: schema([]*schema.SchemaField{
+		Schema: createSchema([]*schema.SchemaField{
 			{Name: "name", Type: schema.FieldTypeText},
 			{Name: "client_id", Type: schema.FieldTypeText},
 			{Name: "status", Type: schema.FieldTypeText},
@@ -51,6 +51,6 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 }
 
 // Helper function to create a schema
-func schema(fields []*schema.SchemaField) schema.Schema {
+func createSchema(fields []*schema.SchemaField) schema.Schema {
 	return schema.NewSchema(fields...)
 }
