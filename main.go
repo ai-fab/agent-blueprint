@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pocketbase/pocketbase"
@@ -21,16 +20,20 @@ func main() {
 		log.Fatalf("Failed to initialize PocketBase: %v", err)
 	}
 
-	// Setup Echo routes
-	e := echo.New()
-	e.Use(middleware.ClientAuth(app))
-
-	// Register routes
-	handlers.RegisterRoutes(e, app)
-
 	// Start the server
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-		e.Router.GET("/*", echo.WrapHandler(e.Router), middleware.ClientAuth(app))
+		// Create a new Echo instance
+		echoApp := echo.New()
+
+		// Apply middleware
+		echoApp.Use(middleware.ClientAuth(app))
+
+		// Register routes
+		handlers.RegisterRoutes(echoApp, app)
+
+		// Mount Echo to the root
+		e.Router.GET("/*", echo.WrapHandler(echoApp))
+
 		return nil
 	})
 
