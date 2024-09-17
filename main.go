@@ -43,8 +43,8 @@ func main() {
 		// Register routes
 		handlers.RegisterRoutes(echoApp, app)
 
-		// Mount Echo to the root
-		e.Router.Any("/*", echo.WrapHandler(echoApp))
+		// Mount Echo routes
+		e.Router.Any("/api/*", echo.WrapHandler(echoApp))
 
 		return nil
 	})
