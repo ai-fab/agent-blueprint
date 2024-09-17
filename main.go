@@ -21,8 +21,17 @@ func main() {
 
 	// Register migrate command
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
-		Dir:         "./migrations",
+		Dir:         "migrations",
 		Automigrate: true,
+	})
+
+	// Register custom migrations
+	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		// This will load and execute all .go files in the migrations directory
+		return migratecmd.RunMigrations(app.Dao(), &migratecmd.Config{
+			Dir:         "migrations",
+			Automigrate: true,
+		})
 	})
 
 	// Initialize PocketBase and run migrations
