@@ -16,11 +16,25 @@ func init() {
 			return err
 		}
 
-		record := models.NewRecord(collection)
-		record.Set("client_id", "test_client")
-		record.Set("client_secret", "test_secret")
+		clients := []struct {
+			clientID     string
+			clientSecret string
+		}{
+			{"test_client_1", "test_secret_1"},
+			{"test_client_2", "test_secret_2"},
+		}
 
-		return dao.SaveRecord(record)
+		for _, client := range clients {
+			record := models.NewRecord(collection)
+			record.Set("client_id", client.clientID)
+			record.Set("client_secret", client.clientSecret)
+
+			if err := dao.SaveRecord(record); err != nil {
+				return err
+			}
+		}
+
+		return nil
 	}, func(db dbx.Builder) error {
 		dao := daos.New(db)
 
@@ -29,11 +43,19 @@ func init() {
 			return err
 		}
 
-		record, err := dao.FindFirstRecordByData(collection.Id, "client_id", "test_client")
-		if err != nil {
-			return nil // If the record doesn't exist, we don't need to delete it
+		clients := []string{"test_client_1", "test_client_2"}
+
+		for _, clientID := range clients {
+			record, err := dao.FindFirstRecordByData(collection.Id, "client_id", clientID)
+			if err != nil {
+				continue // If the record doesn't exist, we don't need to delete it
+			}
+
+			if err := dao.DeleteRecord(record); err != nil {
+				return err
+			}
 		}
 
-		return dao.DeleteRecord(record)
+		return nil
 	})
 }
