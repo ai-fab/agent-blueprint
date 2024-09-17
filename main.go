@@ -26,11 +26,6 @@ func main() {
 		Automigrate: true,
 	})
 
-	// Ensure all migrations are executed
-	if err := app.ResetBootstrapState(); err != nil {
-		log.Printf("Failed to reset bootstrap state: %v", err)
-	}
-
 	// Run migrations
 	if err := app.Bootstrap(); err != nil {
 		log.Fatalf("Failed to bootstrap and run migrations: %v", err)
