@@ -11,6 +11,7 @@ go.work
 
 # Go workspace file
 go.work
+go.mod
 
 # Binaries for programs and plugins
 *.exe
