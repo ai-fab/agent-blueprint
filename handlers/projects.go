@@ -12,9 +12,9 @@ import (
 )
 
 func RegisterRoutes(e *echo.Echo, app *pocketbase.PocketBase) {
-	e.POST("/projects", createProject(app))
-	e.GET("/projects", listProjects(app))
-	e.GET("/projects/:id/status", getProjectStatus(app))
+	e.POST("/api/projects", createProject(app))
+	e.GET("/api/projects", listProjects(app))
+	e.GET("/api/projects/:id/status", getProjectStatus(app))
 }
 
 func createProject(app *pocketbase.PocketBase) echo.HandlerFunc {

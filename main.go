@@ -44,7 +44,10 @@ func main() {
 		handlers.RegisterRoutes(echoApp, app)
 
 		// Mount Echo routes
-		e.Router.Any("/api/*", echo.WrapHandler(echoApp))
+		e.Router.Any("/api/*", func(c echo.Context) error {
+			echoApp.ServeHTTP(c.Response(), c.Request())
+			return nil
+		})
 
 		return nil
 	})
