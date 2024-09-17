@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// Apply migrations
-	if err := migratecmd.MigrateUp(app, ""); err != nil {
+	if err := migratecmd.Migrate(app, "", "up"); err != nil {
 		log.Fatalf("Failed to apply migrations: %v", err)
 	}
 
