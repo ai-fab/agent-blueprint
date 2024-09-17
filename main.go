@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
 	"service-blueprint/config"
 	"service-blueprint/handlers"
@@ -14,6 +15,12 @@ import (
 
 func main() {
 	app := pocketbase.New()
+
+	// Register migrate command
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+		Dir:         "./migrations",
+		Automigrate: true,
+	})
 
 	// Initialize PocketBase
 	if err := config.InitializePocketBase(app); err != nil {
@@ -32,10 +39,7 @@ func main() {
 		handlers.RegisterRoutes(echoApp, app)
 
 		// Mount Echo to the root
-		e.Router.GET("/*", func(c echo.Context) error {
-			echoApp.ServeHTTP(c.Response(), c.Request())
-			return nil
-		})
+		e.Router.GET("/*", echo.WrapHandler(echoApp))
 
 		return nil
 	})
