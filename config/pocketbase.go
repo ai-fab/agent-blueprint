@@ -13,43 +13,58 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		return fmt.Errorf("failed to bootstrap PocketBase: %w", err)
 	}
 
-	// Create settings collection
-	settingsCollection := &models.Collection{
-		Name: "settings",
-		Type: models.CollectionTypeBase,
-		Schema: createSchema([]*schema.SchemaField{
-			{Name: "user", Type: schema.FieldTypeText},
-			{Name: "key", Type: schema.FieldTypeText},
-			{Name: "value", Type: schema.FieldTypeText},
-		}),
+	// Ensure the database is migrated
+	if err := app.Dao().RunMigrations(); err != nil {
+		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 
-	// Create client_applications collection
-	clientAppsCollection := &models.Collection{
-		Name: "client_applications",
-		Type: models.CollectionTypeBase,
-		Schema: createSchema([]*schema.SchemaField{
-			{Name: "client_id", Type: schema.FieldTypeText},
-			{Name: "client_secret", Type: schema.FieldTypeText},
-		}),
+	collections := []struct {
+		name   string
+		schema schema.Schema
+	}{
+		{
+			name: "settings",
+			schema: schema.Schema{
+				"user": {Type: schema.FieldTypeText},
+				"key":  {Type: schema.FieldTypeText},
+				"value": {Type: schema.FieldTypeText},
+			},
+		},
+		{
+			name: "client_applications",
+			schema: schema.Schema{
+				"client_id":     {Type: schema.FieldTypeText},
+				"client_secret": {Type: schema.FieldTypeText},
+			},
+		},
+		{
+			name: "projects",
+			schema: schema.Schema{
+				"name":      {Type: schema.FieldTypeText},
+				"client_id": {Type: schema.FieldTypeText},
+				"status":    {Type: schema.FieldTypeText},
+			},
+		},
 	}
 
-	// Create projects collection
-	projectsCollection := &models.Collection{
-		Name: "projects",
-		Type: models.CollectionTypeBase,
-		Schema: createSchema([]*schema.SchemaField{
-			{Name: "name", Type: schema.FieldTypeText},
-			{Name: "client_id", Type: schema.FieldTypeText},
-			{Name: "status", Type: schema.FieldTypeText},
-		}),
-	}
-
-	collections := []*models.Collection{settingsCollection, clientAppsCollection, projectsCollection}
-
-	for _, collection := range collections {
-		if err := app.Dao().SaveCollection(collection); err != nil {
-			return fmt.Errorf("failed to save collection %s: %w", collection.Name, err)
+	for _, col := range collections {
+		collection, err := app.Dao().FindCollectionByNameOrId(col.name)
+		if err != nil {
+			// Collection doesn't exist, create it
+			collection = &models.Collection{
+				Name:   col.name,
+				Type:   models.CollectionTypeBase,
+				Schema: col.schema,
+			}
+			if err := app.Dao().SaveCollection(collection); err != nil {
+				return fmt.Errorf("failed to create collection %s: %w", col.name, err)
+			}
+		} else {
+			// Collection exists, update its schema
+			collection.Schema = col.schema
+			if err := app.Dao().SaveCollection(collection); err != nil {
+				return fmt.Errorf("failed to update collection %s: %w", col.name, err)
+			}
 		}
 	}
 
