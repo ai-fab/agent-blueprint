@@ -11,12 +11,6 @@ import (
 	"github.com/pocketbase/pocketbase/models"
 )
 
-func RegisterRoutes(e *echo.Echo, app *pocketbase.PocketBase) {
-	e.POST("/api/projects", createProject(app))
-	e.GET("/api/projects", listProjects(app))
-	e.GET("/api/projects/:id/status", getProjectStatus(app))
-}
-
 func createProject(app *pocketbase.PocketBase) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		clientID := c.Request().Header.Get("X-Client-ID")
