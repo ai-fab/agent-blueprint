@@ -52,5 +52,5 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 
 // Helper function to create a schema
 func schema(fields []*schema.SchemaField) schema.Schema {
-	return schema.Schema(fields)
+	return schema.NewSchema(fields...)
 }
