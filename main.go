@@ -29,9 +29,14 @@ func main() {
 		Automigrate: true,
 	})
 
-	// Initialize PocketBase (this will run migrations)
+	// Initialize PocketBase and run migrations
 	if err := config.InitializePocketBase(app); err != nil {
 		log.Fatalf("Failed to initialize PocketBase: %v", err)
+	}
+
+	// Ensure migrations are applied
+	if err := app.Bootstrap(); err != nil {
+		log.Fatalf("Failed to bootstrap PocketBase: %v", err)
 	}
 
 	// Create admin user after migrations have run
