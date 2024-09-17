@@ -39,8 +39,10 @@ func main() {
 		log.Fatalf("Failed to bootstrap PocketBase: %v", err)
 	}
 
-	// Migrations are handled automatically by the migratecmd plugin
-	// No need to manually call Migrate here
+	// Run migrations
+	if err := app.ResetBootstrapState(); err != nil {
+		log.Fatalf("Failed to reset bootstrap state: %v", err)
+	}
 
 	// Create admin user after migrations have run
 	if err := createAdminUser(app); err != nil {
@@ -87,5 +89,19 @@ func createAdminUser(app *pocketbase.PocketBase) error {
 	admin.Email = adminEmail
 	admin.SetPassword(adminPassword)
 
-	return app.Dao().SaveAdmin(admin)
+	err = app.Dao().SaveAdmin(admin)
+	if err != nil {
+		if strings.Contains(err.Error(), "no such table: _admins") {
+			// If the _admins table doesn't exist, try to create it
+			_, err = app.DB().NewQuery("CREATE TABLE _admins (id TEXT PRIMARY KEY, created TEXT DEFAULT '', updated TEXT DEFAULT '', email TEXT, tokenKey TEXT, passwordHash TEXT, lastResetSentAt TEXT DEFAULT '', avatar TEXT DEFAULT '')").Execute()
+			if err != nil {
+				return fmt.Errorf("failed to create _admins table: %v", err)
+			}
+			// Try to save the admin again
+			return app.Dao().SaveAdmin(admin)
+		}
+		return fmt.Errorf("failed to save admin: %v", err)
+	}
+
+	return nil
 }
