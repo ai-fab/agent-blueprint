@@ -13,11 +13,6 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		return fmt.Errorf("failed to bootstrap PocketBase: %w", err)
 	}
 
-	// Ensure the database is migrated
-	if err := app.Dao().RunMigrations(); err != nil {
-		return fmt.Errorf("failed to run migrations: %w", err)
-	}
-
 	collections := []struct {
 		name   string
 		schema schema.Schema
@@ -25,8 +20,8 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		{
 			name: "settings",
 			schema: schema.Schema{
-				"user": {Type: schema.FieldTypeText},
-				"key":  {Type: schema.FieldTypeText},
+				"user":  {Type: schema.FieldTypeText},
+				"key":   {Type: schema.FieldTypeText},
 				"value": {Type: schema.FieldTypeText},
 			},
 		},
