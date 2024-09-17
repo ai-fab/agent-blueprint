@@ -6,18 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/forms"
-	"github.com/pocketbase/pocketbase/models"
-
-	"service-blueprint/models"
-)
-
-import (
-	"net/http"
-
-	"github.com/labstack/echo/v4"
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/forms"
-	"github.com/pocketbase/pocketbase/models"
+	pbmodels "github.com/pocketbase/pocketbase/models"
 )
 
 func RegisterRoutes(e *echo.Echo, app *pocketbase.PocketBase) {
@@ -30,7 +19,7 @@ func createProject(app *pocketbase.PocketBase) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		clientID := c.Request().Header.Get("X-Client-ID")
 
-		record := models.NewRecord(app.Dao().FindCollectionByNameOrId("projects"))
+		record := pbmodels.NewRecord(app.Dao().FindCollectionByNameOrId("projects"))
 		form := forms.NewRecordUpsert(app, record)
 
 		if err := c.Bind(form); err != nil {
