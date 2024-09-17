@@ -20,24 +20,24 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		{
 			name: "settings",
 			schema: schema.Schema{
-				"user":  {Type: schema.FieldTypeText},
-				"key":   {Type: schema.FieldTypeText},
-				"value": {Type: schema.FieldTypeText},
+				"user":  {&schema.SchemaField{Type: schema.FieldTypeText}},
+				"key":   {&schema.SchemaField{Type: schema.FieldTypeText}},
+				"value": {&schema.SchemaField{Type: schema.FieldTypeText}},
 			},
 		},
 		{
 			name: "client_applications",
 			schema: schema.Schema{
-				"client_id":     {Type: schema.FieldTypeText},
-				"client_secret": {Type: schema.FieldTypeText},
+				"client_id":     {&schema.SchemaField{Type: schema.FieldTypeText}},
+				"client_secret": {&schema.SchemaField{Type: schema.FieldTypeText}},
 			},
 		},
 		{
 			name: "projects",
 			schema: schema.Schema{
-				"name":      {Type: schema.FieldTypeText},
-				"client_id": {Type: schema.FieldTypeText},
-				"status":    {Type: schema.FieldTypeText},
+				"name":      {&schema.SchemaField{Type: schema.FieldTypeText}},
+				"client_id": {&schema.SchemaField{Type: schema.FieldTypeText}},
+				"status":    {&schema.SchemaField{Type: schema.FieldTypeText}},
 			},
 		},
 	}
