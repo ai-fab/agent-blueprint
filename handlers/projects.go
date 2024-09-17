@@ -89,7 +89,7 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 
 func getProjectStatus(app *pocketbase.PocketBase) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		projectID := c.Param("id")
+		projectID := c.PathParam("id")
 		clientID := c.Request().Header.Get("X-Client-ID")
 
 		record, err := app.Dao().FindRecordById("projects", projectID)
