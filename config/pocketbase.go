@@ -20,6 +20,24 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 		Automigrate: true,
 	})
 
-	// Migrations will be automatically run by PocketBase
+	// Run migrations manually
+	if err := runMigrations(app); err != nil {
+		return fmt.Errorf("failed to run migrations: %w", err)
+	}
+
 	return nil
+}
+
+func runMigrations(app *pocketbase.PocketBase) error {
+	collection, err := app.Dao().FindCollectionByNameOrId("_migrations")
+	if err != nil {
+		return fmt.Errorf("failed to find migrations collection: %w", err)
+	}
+
+	migrations, err := migratecmd.NewMigrationsRunner(app.Dao(), collection)
+	if err != nil {
+		return fmt.Errorf("failed to create migrations runner: %w", err)
+	}
+
+	return migrations.Run(migratecmd.RunOptions{})
 }

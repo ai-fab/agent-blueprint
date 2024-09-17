@@ -29,22 +29,14 @@ func main() {
 		Automigrate: true,
 	})
 
-	// Run migrations and create admin user
-	if err := app.Bootstrap(); err != nil {
-		log.Fatalf("Failed to bootstrap: %v", err)
-	}
-
-	if err := runMigrations(app); err != nil {
-		log.Fatalf("Failed to run migrations: %v", err)
-	}
-
-	if err := createAdminUser(app); err != nil {
-		log.Fatalf("Failed to create admin user: %v", err)
-	}
-
-	// Initialize PocketBase
+	// Initialize PocketBase (this will run migrations)
 	if err := config.InitializePocketBase(app); err != nil {
 		log.Fatalf("Failed to initialize PocketBase: %v", err)
+	}
+
+	// Create admin user after migrations have run
+	if err := createAdminUser(app); err != nil {
+		log.Fatalf("Failed to create admin user: %v", err)
 	}
 
 	// Start the server
