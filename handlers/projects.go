@@ -5,9 +5,10 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/forms"
-	pbmodels "github.com/pocketbase/pocketbase/models"
+	"github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/models"
 )
 
 func RegisterRoutes(e *echo.Echo, app *pocketbase.PocketBase) {
@@ -20,21 +21,24 @@ func createProject(app *pocketbase.PocketBase) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		clientID := c.Request().Header.Get("X-Client-ID")
 
-		record := pbmodels.NewRecord(app.Dao().FindCollectionByNameOrId("projects"))
-		form := forms.NewRecordUpsert(app, record)
+		collection, err := app.Dao().FindCollectionByNameOrId("projects")
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to find projects collection")
+		}
 
-		if err := c.Bind(form); err != nil {
+		record := models.NewRecord(collection)
+		if err := apis.BindBody(c, record); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid input data")
 		}
 
 		// Validate required fields
-		if form.GetString("name") == "" {
+		if record.Get("name") == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "Project name is required")
 		}
 
-		form.SetDataValue("client_id", clientID)
+		record.Set("client_id", clientID)
 
-		if err := form.Submit(); err != nil {
+		if err := app.Dao().SaveRecord(record); err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create project: "+err.Error())
 		}
 
@@ -55,17 +59,19 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 			perPage = 20
 		}
 
-		records, err := app.Dao().FindRecordsByExpr("projects",
-			"client_id = {:clientID}",
-			map[string]interface{}{"clientID": clientID},
-			perPage,
-			(page-1)*perPage,
-		)
+		query := app.Dao().RecordQuery("projects").
+			Where(dbx.HashExp{"client_id": clientID}).
+			Limit(perPage).
+			Offset((page - 1) * perPage)
+
+		records, err := query.All()
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch projects: "+err.Error())
 		}
 
-		totalRecords, err := app.Dao().FindRecordsByExpr("projects", "client_id = {:clientID}", map[string]interface{}{"clientID": clientID})
+		totalRecords, err := app.Dao().RecordQuery("projects").
+			Where(dbx.HashExp{"client_id": clientID}).
+			Count()
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to count projects: "+err.Error())
 		}
@@ -73,7 +79,7 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"items": records,
 			"page":  page,
-			"total": len(totalRecords),
+			"total": totalRecords,
 		})
 	}
 }
