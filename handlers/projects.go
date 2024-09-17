@@ -72,7 +72,7 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 
 		totalRecords, err := app.Dao().RecordQuery("projects").
 			Where(dbx.HashExp{"client_id": clientID}).
-			Count(nil)
+			CountX()
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to count projects: "+err.Error())
 		}
