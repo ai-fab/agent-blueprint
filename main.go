@@ -61,11 +61,6 @@ func main() {
 	}
 }
 
-func runMigrations(app *pocketbase.PocketBase) error {
-	// Migrations are handled automatically by migratecmd
-	return nil
-}
-
 func createAdminUser(app *pocketbase.PocketBase) error {
 	adminEmail := os.Getenv("ADMIN_EMAIL")
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
