@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the base URL
-BASE_URL="http://localhost:8090"
+BASE_URL="http://localhost:8090/api"
 
 # Test client credentials
 CLIENT_ID="test_client"

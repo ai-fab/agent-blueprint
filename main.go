@@ -44,7 +44,7 @@ func main() {
 		handlers.RegisterRoutes(echoApp, app)
 
 		// Mount Echo to the root
-		e.Router.GET("/*", echo.WrapHandler(echoApp))
+		e.Router.ANY("/*", echo.WrapHandler(echoApp))
 
 		return nil
 	})
