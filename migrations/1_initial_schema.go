@@ -18,26 +18,50 @@ func init() {
 		}{
 			{
 				name: "settings",
-				schema: schema.Schema{
-					"user":  {Type: "text"},
-					"key":   {Type: "text"},
-					"value": {Type: "text"},
-				},
+				schema: schema.NewSchema(
+					&schema.SchemaField{
+						Name: "user",
+						Type: "text",
+					},
+					&schema.SchemaField{
+						Name: "key",
+						Type: "text",
+					},
+					&schema.SchemaField{
+						Name: "value",
+						Type: "text",
+					},
+				),
 			},
 			{
 				name: "client_applications",
-				schema: schema.Schema{
-					"client_id":     {Type: "text"},
-					"client_secret": {Type: "text"},
-				},
+				schema: schema.NewSchema(
+					&schema.SchemaField{
+						Name: "client_id",
+						Type: "text",
+					},
+					&schema.SchemaField{
+						Name: "client_secret",
+						Type: "text",
+					},
+				),
 			},
 			{
 				name: "projects",
-				schema: schema.Schema{
-					"name":      {Type: "text"},
-					"client_id": {Type: "text"},
-					"status":    {Type: "text"},
-				},
+				schema: schema.NewSchema(
+					&schema.SchemaField{
+						Name: "name",
+						Type: "text",
+					},
+					&schema.SchemaField{
+						Name: "client_id",
+						Type: "text",
+					},
+					&schema.SchemaField{
+						Name: "status",
+						Type: "text",
+					},
+				),
 			},
 		}
 
