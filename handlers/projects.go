@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/models"
 )
 
@@ -27,7 +27,7 @@ func createProject(app *pocketbase.PocketBase) echo.HandlerFunc {
 		}
 
 		record := models.NewRecord(collection)
-		if err := apis.BindBody(c, record); err != nil {
+		if err := json.NewDecoder(c.Request().Body).Decode(record); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid input data")
 		}
 
@@ -61,17 +61,18 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 
 		query := app.Dao().RecordQuery("projects").
 			Where(dbx.HashExp{"client_id": clientID}).
-			Limit(perPage).
-			Offset((page - 1) * perPage)
+			Limit(int64(perPage)).
+			Offset(int64((page - 1) * perPage))
 
-		records, err := query.All()
+		records := []models.Record{}
+		err := query.All(&records)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch projects: "+err.Error())
 		}
 
 		totalRecords, err := app.Dao().RecordQuery("projects").
 			Where(dbx.HashExp{"client_id": clientID}).
-			Count()
+			Count(nil)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to count projects: "+err.Error())
 		}
