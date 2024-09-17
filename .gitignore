@@ -12,6 +12,7 @@ go.work
 # Go workspace file
 go.work
 go.mod
+go.sum
 
 # Binaries for programs and plugins
 *.exe
