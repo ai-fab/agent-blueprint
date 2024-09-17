@@ -10,32 +10,32 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	settingsCollection := &models.Collection{
 		Name: "settings",
 		Type: models.CollectionTypeBase,
-		Schema: models.Schema{
-			&models.SchemaField{Name: "user", Type: "text"},
-			&models.SchemaField{Name: "key", Type: "text"},
-			&models.SchemaField{Name: "value", Type: "text"},
-		},
+		Schema: schema([]*models.SchemaField{
+			{Name: "user", Type: "text"},
+			{Name: "key", Type: "text"},
+			{Name: "value", Type: "text"},
+		}),
 	}
 
 	// Create client_applications collection
 	clientAppsCollection := &models.Collection{
 		Name: "client_applications",
 		Type: models.CollectionTypeBase,
-		Schema: models.Schema{
-			&models.SchemaField{Name: "client_id", Type: "text"},
-			&models.SchemaField{Name: "client_secret", Type: "text"},
-		},
+		Schema: schema([]*models.SchemaField{
+			{Name: "client_id", Type: "text"},
+			{Name: "client_secret", Type: "text"},
+		}),
 	}
 
 	// Create projects collection
 	projectsCollection := &models.Collection{
 		Name: "projects",
 		Type: models.CollectionTypeBase,
-		Schema: models.Schema{
-			&models.SchemaField{Name: "name", Type: "text"},
-			&models.SchemaField{Name: "client_id", Type: "text"},
-			&models.SchemaField{Name: "status", Type: "text"},
-		},
+		Schema: schema([]*models.SchemaField{
+			{Name: "name", Type: "text"},
+			{Name: "client_id", Type: "text"},
+			{Name: "status", Type: "text"},
+		}),
 	}
 
 	collections := []*models.Collection{settingsCollection, clientAppsCollection, projectsCollection}
@@ -47,4 +47,9 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 	}
 
 	return nil
+}
+
+// Helper function to create a schema
+func schema(fields []*models.SchemaField) models.Schema {
+	return models.Schema(fields)
 }
