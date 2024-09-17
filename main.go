@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/core"
 
@@ -32,7 +32,7 @@ func main() {
 		handlers.RegisterRoutes(echoApp, app)
 
 		// Mount Echo to the root
-		e.Router.GET("/*", echo.WrapHandler(echoApp))
+		e.Router.GET("/*", echoApp.ServeHTTP)
 
 		return nil
 	})
