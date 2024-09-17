@@ -1,12 +1,18 @@
 package config
 
 import (
+	"fmt"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/models"
 	"github.com/pocketbase/pocketbase/models/schema"
 )
 
 func InitializePocketBase(app *pocketbase.PocketBase) error {
+	// Initialize the database
+	if err := app.Bootstrap(); err != nil {
+		return fmt.Errorf("failed to bootstrap PocketBase: %w", err)
+	}
+
 	// Create settings collection
 	settingsCollection := &models.Collection{
 		Name: "settings",
@@ -43,7 +49,7 @@ func InitializePocketBase(app *pocketbase.PocketBase) error {
 
 	for _, collection := range collections {
 		if err := app.Dao().SaveCollection(collection); err != nil {
-			return err
+			return fmt.Errorf("failed to save collection %s: %w", collection.Name, err)
 		}
 	}
 
