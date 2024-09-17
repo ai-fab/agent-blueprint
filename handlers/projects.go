@@ -70,9 +70,11 @@ func listProjects(app *pocketbase.PocketBase) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch projects: "+err.Error())
 		}
 
-		totalRecords, err := app.Dao().RecordQuery("projects").
+		totalRecords := 0
+		err = app.Dao().RecordQuery("projects").
 			Where(dbx.HashExp{"client_id": clientID}).
-			CountX()
+			Select("count(*)").
+			Row(&totalRecords)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to count projects: "+err.Error())
 		}
