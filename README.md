@@ -1,15 +1,16 @@
-# Service Blueprint
+# AI Agent Microservices Blueprint
 
 ## Overview
 
-Service Blueprint is a robust, scalable backend service built with Go and PocketBase. It provides a solid foundation for building client-specific project management applications with features like client authentication, project creation, listing, and status retrieval.
+AI Agent Microservices Blueprint is a robust, scalable backend service built with Go and PocketBase. It provides a solid foundation for developing AI agents in a microservices architecture, with features like client authentication, project management, and extensible AI agent integration.
 
 ## Features
 
 - Client Authentication: Secure API access using client ID and secret
-- Project Management: Create, list, and check status of projects
+- Project Management: Create, list, and check status of AI agent projects
+- AI Agent Integration: Extensible architecture for integrating various AI agents
 - Database Migrations: Automated schema updates and initial data seeding
-- Extensible Architecture: Easy to add new features and endpoints
+- Microservices Architecture: Designed for scalability and modularity
 - CRUD Testing: Bash script for testing API endpoints
 
 ## Prerequisites
@@ -20,13 +21,14 @@ Service Blueprint is a robust, scalable backend service built with Go and Pocket
 - Bash (for running the test script)
 - curl (for API testing)
 - jq (for parsing JSON responses in the test script)
+- Docker (for containerization and microservices deployment)
 
 ## Installation
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/service-blueprint.git
-   cd service-blueprint
+   git clone https://github.com/yourusername/ai-agent-microservices-blueprint.git
+   cd ai-agent-microservices-blueprint
    ```
 
 2. Install dependencies:
@@ -44,12 +46,18 @@ Service Blueprint is a robust, scalable backend service built with Go and Pocket
    make build
    ```
 
+5. Build Docker images for microservices:
+   ```
+   docker-compose build
+   ```
+
 ## Configuration
 
 Edit the `.env` file to set your environment variables:
 
 - `ADMIN_EMAIL`: Email for the initial admin user
 - `ADMIN_PASSWORD`: Password for the initial admin user
+- `AI_AGENT_ENDPOINTS`: Comma-separated list of AI agent service endpoints
 
 ## Database Migrations
 
@@ -63,21 +71,22 @@ This will create the necessary tables and add two test clients:
 - Client 1: ID: `test_client_1`, Secret: `test_secret_1`
 - Client 2: ID: `test_client_2`, Secret: `test_secret_2`
 
-## Running the Service
+## Running the Services
 
-Start the service:
+Start the microservices:
 
 ```
-make run
+docker-compose up
 ```
 
-The service will be available at `http://localhost:8090`.
+The main service will be available at `http://localhost:8090`.
 
 ## API Endpoints
 
-- `POST /api/projects`: Create a new project
-- `GET /api/projects`: List projects for a client
-- `GET /api/projects/:id/status`: Get the status of a specific project
+- `POST /api/projects`: Create a new AI agent project
+- `GET /api/projects`: List AI agent projects for a client
+- `GET /api/projects/:id/status`: Get the status of a specific AI agent project
+- `POST /api/agents/:agent_type/execute`: Execute an AI agent task
 
 All endpoints require client authentication headers:
 - `X-Client-ID`: The client's ID
@@ -103,19 +112,23 @@ This will start the server, run a series of API tests, and then stop the server.
 - `middleware/`: Custom middleware (e.g., client authentication)
 - `migrations/`: Database migration files
 - `models/`: Data models
+- `agents/`: AI agent integration code
 - `test_crud.sh`: CRUD testing script
+- `docker-compose.yml`: Docker Compose configuration for microservices
 
-### Adding New Features
+### Adding New AI Agents
 
-1. Create new migration files in the `migrations/` directory if needed
-2. Add new handlers in the `handlers/` directory
-3. Register new routes in `main.go`
-4. Update the `test_crud.sh` script to test new endpoints
+1. Create a new directory in `agents/` for the AI agent type
+2. Implement the agent's logic and API in the new directory
+3. Add a new service to `docker-compose.yml` for the AI agent
+4. Update the main service to communicate with the new AI agent service
+5. Add new routes and handlers for the AI agent's functionality
+6. Update the `test_crud.sh` script to test the new AI agent endpoints
 
 ## Makefile Commands
 
-- `make build`: Build the service
-- `make run`: Run the service
+- `make build`: Build the main service
+- `make run`: Run the main service (for local development)
 - `make test`: Run Go tests
 - `make clean`: Remove the built binary
 - `make clean-db`: Remove the PocketBase data directory
@@ -123,6 +136,9 @@ This will start the server, run a series of API tests, and then stop the server.
 - `make migrate-down`: Revert database migrations
 - `make migrate-fresh`: Revert and re-run all migrations
 - `make test-crud`: Run the CRUD test script
+- `make docker-build`: Build all Docker images
+- `make docker-up`: Start all Docker services
+- `make docker-down`: Stop all Docker services
 
 ## Contributing
 
