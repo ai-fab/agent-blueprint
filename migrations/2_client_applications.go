@@ -12,18 +12,18 @@ import (
 func init() {
 	m.Register(func(db dbx.Builder) error {
 		jsonData := `{
-			"id": "settings",
-			"name": "settings",
+			"id": "client_applications",
+			"name": "client_applications",
 			"type": "base",
 			"system": false,
 			"schema": [
 				{
 					"system": false,
-					"id": "user",
-					"name": "user",
+					"id": "client_id",
+					"name": "client_id",
 					"type": "text",
-					"required": false,
-					"unique": false,
+					"required": true,
+					"unique": true,
 					"options": {
 						"min": null,
 						"max": null,
@@ -32,23 +32,10 @@ func init() {
 				},
 				{
 					"system": false,
-					"id": "key",
-					"name": "key",
+					"id": "client_secret",
+					"name": "client_secret",
 					"type": "text",
-					"required": false,
-					"unique": false,
-					"options": {
-						"min": null,
-						"max": null,
-						"pattern": ""
-					}
-				},
-				{
-					"system": false,
-					"id": "value",
-					"name": "value",
-					"type": "text",
-					"required": false,
+					"required": true,
 					"unique": false,
 					"options": {
 						"min": null,
@@ -57,7 +44,7 @@ func init() {
 					}
 				}
 			],
-			"indexes": [],
+			"indexes": ["CREATE UNIQUE INDEX idx_client_id ON client_applications (client_id)"],
 			"listRule": null,
 			"viewRule": null,
 			"createRule": null,
@@ -75,7 +62,7 @@ func init() {
 	}, func(db dbx.Builder) error {
 		dao := daos.New(db)
 
-		collection, err := dao.FindCollectionByNameOrId("settings")
+		collection, err := dao.FindCollectionByNameOrId("client_applications")
 		if err != nil {
 			return err
 		}
