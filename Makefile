@@ -3,8 +3,8 @@
 build:
 	go build -o service-blueprint
 
-run: build
-	./service-blueprint serve
+run:
+	go run . serve
 
 test:
 	go test ./...
@@ -12,12 +12,15 @@ test:
 clean:
 	rm -f service-blueprint
 
-migrate:
+clean-db:
+	rm -rf pb_data
+
+migrate: build
 	./service-blueprint migrate up
 
-migrate-down:
+migrate-down: build
 	./service-blueprint migrate down
 
-migrate-fresh:
+migrate-fresh: build
 	./service-blueprint migrate down
 	./service-blueprint migrate up
