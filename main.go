@@ -39,6 +39,11 @@ func main() {
 		log.Fatalf("Failed to bootstrap PocketBase: %v", err)
 	}
 
+	// Apply migrations
+	if err := migratecmd.MigrateUp(app, ""); err != nil {
+		log.Fatalf("Failed to apply migrations: %v", err)
+	}
+
 	// Create admin user after migrations have run
 	if err := createAdminUser(app); err != nil {
 		log.Fatalf("Failed to create admin user: %v", err)
