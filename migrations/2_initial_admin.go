@@ -3,7 +3,6 @@ package migrations
 import (
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase/daos"
 	m "github.com/pocketbase/pocketbase/migrations"
@@ -11,9 +10,6 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		panic("Error loading .env file")
-	}
 
 	m.Register(func(db dbx.Builder) error {
 		dao := daos.New(db)
